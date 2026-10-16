@@ -28,6 +28,8 @@ services:
       PACT_BROKER_DATABASE_URL: postgres://pact:pact@postgres/pact_broker
       PACT_BROKER_PORT: '9292'
       PACT_BROKER_LOG_LEVEL: WARN
+      # No "Example App / Example API" demo data on first start: only our own contracts.
+      PACT_BROKER_SEED_EXAMPLE_DATA: 'false'
       # Open for the demo. A shared broker needs authentication (PACT_BROKER_BASIC_AUTH_* or a token).
       PACT_BROKER_ALLOW_PUBLIC_READ: 'true'
     healthcheck:
