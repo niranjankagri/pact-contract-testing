@@ -2,17 +2,20 @@ package com.niranjankagri.products;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.niranjankagri.products.product.ProductRepository;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 
 /**
  * The provider's own HTTP tests: the running app on a random port, called with Java's HttpClient. They check
- * behaviour in detail; the Pact verification (ProductPactVerificationTest) checks what consumers rely on.
+ * behaviour in detail; the Pact verification (package pact) checks what consumers rely on.
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ProductApiTest {
@@ -22,6 +25,18 @@ class ProductApiTest {
 
     @LocalServerPort
     private int port;
+
+    @Autowired
+    private ProductRepository repository;
+
+    /**
+     * Spring reuses one application context for all test classes with the same setup, so the Pact provider
+     * states may have changed the catalogue: every test starts from the demo data.
+     */
+    @BeforeEach
+    void resetCatalogue() {
+        repository.seed();
+    }
 
     private HttpResponse<String> send(String method, String path, String token, String body) throws Exception {
         HttpRequest.Builder request = HttpRequest.newBuilder(URI.create("http://localhost:" + port + path))
