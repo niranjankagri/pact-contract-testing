@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- product-service: the PROVIDER. A Spring Boot API whose contract with its consumers is checked by Pact. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>4.1.1</version>
+    <relativePath/>
+  </parent>
+
+  <groupId>com.niranjankagri</groupId>
+  <artifactId>product-service</artifactId>
+  <version>1.0.0</version>
+  <name>product-service</name>
+  <description>Product catalogue and stock reservations: the provider in the Pact contract-testing demo</description>
+
+  <properties>
+    <java.version>17</java.version>
+    <pact.version>4.7.5</pact.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-webmvc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-validation</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+
+    <!-- Tests: unit and web-layer tests, plus the Pact provider verification (JUnit 5 extension). -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-webmvc-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>au.com.dius.pact.provider</groupId>
+      <artifactId>junit5</artifactId>
+      <version>${pact.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <!-- Hand the Pact settings from the environment (CI, scripts) to the tests as system properties. -->
+          <systemPropertyVariables>
+            <pactbroker.url>${env.PACT_BROKER_BASE_URL}</pactbroker.url>
+            <pact.verifier.publishResults>${env.PACT_PUBLISH_RESULTS}</pact.verifier.publishResults>
+            <pact.provider.version>${env.PROVIDER_VERSION}</pact.provider.version>
+            <pact.provider.branch>${env.PROVIDER_BRANCH}</pact.provider.branch>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
