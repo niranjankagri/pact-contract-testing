@@ -1,7 +1,7 @@
 # A self-hosted Pact Broker (the open-source broker, free) with PostgreSQL, for local runs:
 #   npm run broker:up      -> http://localhost:9292
 #   npm run broker:down    -> stops it and deletes its data
-# CI starts the same two images as service containers (.github/workflows/contract.yml).
+# CI starts this same file with Docker Compose (.github/workflows/contract.yml, via npm run contract).
 name: pact-broker
 
 services:
