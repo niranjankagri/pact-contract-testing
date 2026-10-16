@@ -1,0 +1,31 @@
+{
+  "name": "checkout-web",
+  "version": "1.0.0",
+  "private": true,
+  "description": "The CONSUMER: a TypeScript checkout client that calls product-service. Its Pact tests write the contract.",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:unit": "vitest run test/unit",
+    "test:pact": "vitest run test/pact",
+    "lint": "eslint . && prettier --check .",
+    "format": "prettier --write .",
+    "typecheck": "tsc --noEmit"
+  },
+  "author": "Niranjan Kumar Agri",
+  "license": "MIT",
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@pact-foundation/pact": "17.1.4",
+    "@types/node": "26.6.5",
+    "eslint": "10.12.0",
+    "eslint-config-prettier": "10.1.8",
+    "prettier": "3.9.10",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.71.2",
+    "vitest": "5.0.5"
+  }
+}
