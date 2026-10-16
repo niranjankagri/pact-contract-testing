@@ -12,7 +12,18 @@
 //
 // The script itself succeeds only if step 4 really says no.
 import path from 'node:path';
-import { BROKER_URL, ROOT, gitBranch, gitVersion, mavenProvider, pactBroker, run, step } from './lib.mjs';
+import {
+  BROKER_URL,
+  ROOT,
+  ensureEnvironment,
+  gitBranch,
+  gitVersion,
+  mavenProvider,
+  pactBroker,
+  run,
+  step,
+  verificationResult,
+} from './lib.mjs';
 
 const providerVersion = gitVersion();
 const consumerVersion = `${providerVersion}-discounts`;
@@ -33,6 +44,7 @@ mavenProvider(['test'], {
 });
 
 step(`4. Can checkout-web ${consumerVersion} go to production? (expected: no)`);
+await ensureEnvironment('production');
 const exitCode = pactBroker(
   ['can-i-deploy', '--pacticipant', 'checkout-web', '--version', consumerVersion, '--to-environment', 'production'],
   { allowFailure: true },
@@ -44,6 +56,11 @@ run('npm', ['test'], { cwd: path.join(ROOT, 'checkout-web') });
 
 if (exitCode === 0) {
   console.error('\nUnexpected: can-i-deploy allowed a contract the provider does not fulfil.');
+  process.exit(1);
+}
+// A "no" for another reason (no environment, no verification at all) would prove nothing.
+if ((await verificationResult(consumerVersion)) !== false) {
+  console.error('\nUnexpected: can-i-deploy said no, but not because the feature version failed verification.');
   process.exit(1);
 }
 console.log('\nAs expected: the provider stayed green, and can-i-deploy blocked the consumer feature version.');

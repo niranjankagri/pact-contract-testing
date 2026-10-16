@@ -9,7 +9,17 @@
 //
 // CI (.github/workflows/contract.yml) runs the same steps. The broker UI is at http://localhost:9292.
 import path from 'node:path';
-import { BROKER_URL, ROOT, gitBranch, gitVersion, mavenProvider, pactBroker, run, step } from './lib.mjs';
+import {
+  BROKER_URL,
+  ROOT,
+  ensureEnvironment,
+  gitBranch,
+  gitVersion,
+  mavenProvider,
+  pactBroker,
+  run,
+  step,
+} from './lib.mjs';
 
 const version = gitVersion();
 const branch = gitBranch();
@@ -37,6 +47,7 @@ mavenProvider(['test'], {
 });
 
 step(`5. Can product-service ${version} go to ${ENVIRONMENT}?`);
+await ensureEnvironment(ENVIRONMENT);
 pactBroker(['can-i-deploy', '--pacticipant', 'product-service', '--version', version, '--to-environment', ENVIRONMENT]);
 pactBroker(['record-deployment', '--pacticipant', 'product-service', '--version', version, '--environment', ENVIRONMENT]);
 
