@@ -1,0 +1,38 @@
+# A self-hosted Pact Broker (the open-source broker, free) with PostgreSQL, for local runs:
+#   npm run broker:up      -> http://localhost:9292
+#   npm run broker:down    -> stops it and deletes its data
+# CI starts the same two images as service containers (.github/workflows/contract.yml).
+name: pact-broker
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: pact
+      POSTGRES_PASSWORD: pact # local demo only; never a real secret
+      POSTGRES_DB: pact_broker
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U pact -d pact_broker']
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  broker:
+    image: pactfoundation/pact-broker:3.0.0-pactbroker2.121.2
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - '9292:9292'
+    environment:
+      PACT_BROKER_DATABASE_URL: postgres://pact:pact@postgres/pact_broker
+      PACT_BROKER_PORT: '9292'
+      PACT_BROKER_LOG_LEVEL: WARN
+      # Open for the demo. A shared broker needs authentication (PACT_BROKER_BASIC_AUTH_* or a token).
+      PACT_BROKER_ALLOW_PUBLIC_READ: 'true'
+    healthcheck:
+      # 127.0.0.1, not localhost: in the Alpine image localhost resolves to IPv6 (::1), the broker listens on IPv4.
+      test: ['CMD-SHELL', 'wget -q -O /dev/null http://127.0.0.1:9292/diagnostic/status/heartbeat']
+      interval: 3s
+      timeout: 3s
+      retries: 40

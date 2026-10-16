@@ -1,0 +1,21 @@
+{
+  "name": "pact-contract-testing",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Runs the whole contract-testing workflow locally: Pact Broker, consumer tests, publish, provider verification, can-i-deploy.",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "broker:up": "docker compose -f broker/docker-compose.yml up -d --wait",
+    "broker:down": "docker compose -f broker/docker-compose.yml down -v",
+    "contract": "node scripts/contract-flow.mjs",
+    "demo:breaking": "node scripts/breaking-change-demo.mjs"
+  },
+  "author": "Niranjan Kumar Agri",
+  "license": "MIT",
+  "devDependencies": {
+    "@pact-foundation/pact-cli": "18.1.2"
+  }
+}

@@ -25,14 +25,15 @@ import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
     enablePendingPacts = "true",
     includeWipPactsSince = "2026-01-01")
 @EnabledIfSystemProperty(named = "pactbroker.url", matches = "https?://.+")
-class ProductPactBrokerTest extends ProductPactVerificationBase {
+public class ProductPactBrokerTest extends ProductPactVerificationBase {
 
     /**
      * The consumer versions to verify: the latest on each consumer's main branch, every version that is deployed
      * or released, and versions on a branch with the same name as this provider's branch.
+     * Pact requires the method (and so the class) to be public.
      */
     @PactBrokerConsumerVersionSelectors
-    static SelectorBuilder consumerVersionSelectors() {
+    public static SelectorBuilder consumerVersionSelectors() {
         return new SelectorBuilder().mainBranch().deployedOrReleased().matchingBranch();
     }
 }

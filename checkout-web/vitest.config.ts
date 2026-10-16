@@ -5,6 +5,8 @@ export default defineConfig({
   test: {
     include: ['test/**/*.test.ts'],
     fileParallelism: false,
+    // A fresh pact file on every run (see the file).
+    globalSetup: ['test/pact/globalSetup.ts'],
     // The Pact mock server is a native library; give it time to start on slow CI machines.
     testTimeout: 30_000,
   },
