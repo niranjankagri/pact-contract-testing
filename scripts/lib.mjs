@@ -60,5 +60,6 @@ export function pactBroker(args, options = {}) {
 export function mavenProvider(args, env) {
   const dir = path.join(ROOT, 'product-service');
   const mvnw = path.join(dir, IS_WINDOWS ? 'mvnw.cmd' : 'mvnw');
-  return run(`"${mvnw}"`, ['-B', '-q', ...args], { cwd: dir, env });
+  // Quotes only for cmd.exe (the path may contain spaces); without a shell they would become part of the name.
+  return run(IS_WINDOWS ? `"${mvnw}"` : mvnw, ['-B', '-q', ...args], { cwd: dir, env });
 }
