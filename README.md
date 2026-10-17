@@ -60,6 +60,11 @@ checkout-web needs six interactions from product-service:
 The provider returns more fields (`description`, `category`, `createdAt`). The consumer does not use them, so
 they are not in the contract, and product-service may change them freely. That is what "consumer-driven" means.
 
+**Why both services are in this repository:** the tests run against their own copies, started fresh for every run,
+locally and in CI. No shared or hosted environment means no outages, no test data shared between runs, and no change
+somewhere else that breaks these tests; one clone and one command run everything. Both sides of the contract are here,
+so the whole workflow (publish, verify, can-i-deploy) runs without real teams or deployed services.
+
 ## Project structure
 
 ```
