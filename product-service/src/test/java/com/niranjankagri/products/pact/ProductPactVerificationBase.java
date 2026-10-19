@@ -38,6 +38,7 @@ abstract class ProductPactVerificationBase {
     @Autowired
     private ProductRepository repository;
 
+    /** Points each Pact interaction at the application running on the random port. */
     @BeforeEach
     void setTarget(PactVerificationContext context) {
         // context is null when there are no pacts to verify (see @IgnoreNoPactsToVerify in the folder test).

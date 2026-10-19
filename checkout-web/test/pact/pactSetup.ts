@@ -5,6 +5,7 @@ import { PactV4, MatchersV3 } from '@pact-foundation/pact';
 /** The pact file goes to <repo>/pacts/checkout-web-product-service.json; the publish step sends it to the broker. */
 export const PACT_DIR = path.resolve(import.meta.dirname, '../../../pacts');
 
+/** A Pact (V4) between checkout-web and product-service that writes the contract to PACT_DIR. */
 export function createPact(): PactV4 {
   return new PactV4({
     consumer: 'checkout-web',

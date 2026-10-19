@@ -17,6 +17,7 @@ public class ReservationService {
     private final ProductRepository repository;
     private final Clock clock;
 
+    /** The clock is injected so tests can fix the reservation's expiry time. */
     public ReservationService(ProductRepository repository, Clock clock) {
         this.repository = repository;
         this.clock = clock;

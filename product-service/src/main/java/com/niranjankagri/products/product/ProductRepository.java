@@ -17,6 +17,7 @@ public class ProductRepository {
 
     private final Map<Long, Product> products = new ConcurrentHashMap<>();
 
+    /** Starts with the demo catalogue. */
     public ProductRepository() {
         seed();
     }
@@ -32,6 +33,7 @@ public class ProductRepository {
             .forEach(this::save);
     }
 
+    /** The product with this id, or empty. */
     public Optional<Product> findById(long id) {
         return Optional.ofNullable(products.get(id));
     }
@@ -40,11 +42,13 @@ public class ProductRepository {
         return products.values();
     }
 
+    /** Stores or replaces a product by id; provider states use it to set up the data an interaction needs. */
     public Product save(Product product) {
         products.put(product.id(), product);
         return product;
     }
 
+    /** Empties the catalogue (the "no products" provider state). */
     public void deleteAll() {
         products.clear();
     }

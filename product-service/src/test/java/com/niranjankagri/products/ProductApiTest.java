@@ -38,6 +38,7 @@ class ProductApiTest {
         repository.seed();
     }
 
+    /** Sends one request to the running service, with the Authorization header only when a token is given. */
     private HttpResponse<String> send(String method, String path, String token, String body) throws Exception {
         HttpRequest.Builder request = HttpRequest.newBuilder(URI.create("http://localhost:" + port + path))
             .header("Content-Type", "application/json")
@@ -48,6 +49,7 @@ class ProductApiTest {
         return http.send(request.build(), HttpResponse.BodyHandlers.ofString());
     }
 
+    /** A product comes back with its price as amount and currency, and the date in ISO format. */
     @Test
     void returnsAProductWithPriceAndIsoDate() throws Exception {
         HttpResponse<String> response = send("GET", "/products/1", TOKEN, null);
@@ -59,6 +61,7 @@ class ProductApiTest {
             .contains("\"createdAt\":\"2026-09-01T08:00:00Z\"");
     }
 
+    /** An unknown product is 404 with exactly the agreed error body. */
     @Test
     void answers404ForAnUnknownProduct() throws Exception {
         HttpResponse<String> response = send("GET", "/products/999", TOKEN, null);
@@ -67,6 +70,7 @@ class ProductApiTest {
         assertThat(response.body()).isEqualTo("{\"error\":\"Product 999 not found\"}");
     }
 
+    /** The list filters by ids (unknown ids are left out, the order is by id) and by category. */
     @Test
     void listsProductsByIdsAndCategory() throws Exception {
         assertThat(send("GET", "/products?ids=3,1,77", TOKEN, null).body())
@@ -77,6 +81,7 @@ class ProductApiTest {
             .doesNotContain("Claw hammer");
     }
 
+    /** No token and a wrong token are both 401, with the WWW-Authenticate header. */
     @Test
     void refusesRequestsWithoutAValidToken() throws Exception {
         assertThat(send("GET", "/products/1", null, null).statusCode()).isEqualTo(401);
@@ -85,6 +90,7 @@ class ProductApiTest {
         assertThat(wrong.headers().firstValue("WWW-Authenticate")).hasValue("Bearer");
     }
 
+    /** A quantity of 0 is a 400 naming the field; a body that is not JSON is a 400 too. */
     @Test
     void validatesTheReservationBody() throws Exception {
         HttpResponse<String> zero = send("POST", "/products/1/reservations", TOKEN, "{\"quantity\":0}");
@@ -94,6 +100,7 @@ class ProductApiTest {
         assertThat(send("POST", "/products/1/reservations", TOKEN, "{oops").statusCode()).isEqualTo(400);
     }
 
+    /** Reserving more than the stock is a 409 that says how many units are available. */
     @Test
     void answers409WithTheAvailableStock() throws Exception {
         HttpResponse<String> response = send("POST", "/products/2/reservations", TOKEN, "{\"quantity\":50}");
@@ -102,6 +109,7 @@ class ProductApiTest {
         assertThat(response.body()).contains("\"available\":4").contains("\"error\":\"Not enough stock\"");
     }
 
+    /** The health endpoint is reachable without a token. */
     @Test
     void healthNeedsNoToken() throws Exception {
         assertThat(send("GET", "/actuator/health", null, null).statusCode()).isEqualTo(200);

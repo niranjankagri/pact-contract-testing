@@ -44,6 +44,7 @@ export function gitVersion() {
   return dirty ? `${sha}+local` : sha;
 }
 
+/** The branch the versions are published for: GIT_BRANCH in CI, otherwise the current git branch. */
 export function gitBranch() {
   return process.env.GIT_BRANCH ?? git('rev-parse', '--abbrev-ref', 'HEAD');
 }

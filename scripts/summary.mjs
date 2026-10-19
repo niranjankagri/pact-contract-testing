@@ -11,6 +11,7 @@ if (!response.ok) {
 }
 const { matrix } = await response.json();
 
+/** The branch a version in the matrix was published from, or empty. */
 const branchOf = (version) => version?.branchVersions?.[0]?.name ?? '';
 const lines = [
   '## Pact Broker: verification matrix',

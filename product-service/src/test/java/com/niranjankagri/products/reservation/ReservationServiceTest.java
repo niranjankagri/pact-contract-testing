@@ -19,12 +19,14 @@ class ReservationServiceTest {
     private ProductRepository repository;
     private ReservationService service;
 
+    /** A fresh demo catalogue and a fixed clock for every test. */
     @BeforeEach
     void setUp() {
         repository = new ProductRepository();
         service = new ReservationService(repository, Clock.fixed(NOW, ZoneOffset.UTC));
     }
 
+    /** A reservation holds the units for 15 minutes and lowers the stock by the quantity. */
     @Test
     void reservesUnitsAndLowersTheStock() {
         Reservation reservation = service.reserve(2, 3);
@@ -35,6 +37,7 @@ class ReservationServiceTest {
         assertThat(repository.findById(2).orElseThrow().stock()).isEqualTo(1);
     }
 
+    /** The last units can be reserved; one more is refused with 0 available. */
     @Test
     void reservesTheLastUnitButNotMore() {
         service.reserve(2, 4);
@@ -45,6 +48,7 @@ class ReservationServiceTest {
             .isEqualTo(0);
     }
 
+    /** An unknown product is refused with ProductNotFoundException. */
     @Test
     void refusesAnUnknownProduct() {
         assertThatThrownBy(() -> service.reserve(404, 1)).isInstanceOf(ProductNotFoundException.class);

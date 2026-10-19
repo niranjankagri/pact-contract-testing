@@ -9,6 +9,7 @@ const hammer: Product = { id: 1, name: 'Claw hammer', price: { amount: 19.99, cu
 const drill: Product = { id: 2, name: 'Cordless drill', price: { amount: 89.0, currency: 'EUR' }, stock: 1 };
 const cheap: Product = { id: 3, name: 'Washer', price: { amount: 0.1, currency: 'EUR' }, stock: 100 };
 
+/** A stand-in for ProductClient that knows only the given products; the unit tests need no HTTP at all. */
 const fakeCatalogue = (...products: Product[]) => ({
   getProducts: (ids: number[]) => Promise.resolve(products.filter((product) => ids.includes(product.id))),
 });
@@ -53,6 +54,7 @@ describe('priceBasket', () => {
 });
 
 describe('reserveBasket', () => {
+  /** A reservation as the client would return it, with a fixed expiry. */
   const reservation = (productId: number, quantity: number): Reservation => ({
     reservationId: `r-${productId}`,
     productId,

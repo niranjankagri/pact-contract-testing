@@ -18,18 +18,21 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 @RestControllerAdvice
 public class ApiExceptionHandler {
 
+    /** 404 with the message, for example "Product 999 not found". */
     @ExceptionHandler(ProductNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, Object> notFound(ProductNotFoundException e) {
         return Map.of("error", e.getMessage());
     }
 
+    /** 409 with the number of units still available, so the checkout can offer that many. */
     @ExceptionHandler(InsufficientStockException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public Map<String, Object> outOfStock(InsufficientStockException e) {
         return Map.of("error", "Not enough stock", "available", e.getAvailable());
     }
 
+    /** 400 for a broken validation rule: the first field error as text plus the field name. */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, Object> invalid(MethodArgumentNotValidException e) {
@@ -37,6 +40,7 @@ public class ApiExceptionHandler {
         return Map.of("error", error.getField() + " " + error.getDefaultMessage(), "field", error.getField());
     }
 
+    /** 400 for a body that is not valid JSON or an id that is not a number; no internal details in the answer. */
     @ExceptionHandler({HttpMessageNotReadableException.class, MethodArgumentTypeMismatchException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, Object> unreadable(Exception e) {

@@ -16,6 +16,7 @@ public class ProductController {
 
     private final ProductRepository repository;
 
+    /** Spring injects the repository. */
     public ProductController(ProductRepository repository) {
         this.repository = repository;
     }

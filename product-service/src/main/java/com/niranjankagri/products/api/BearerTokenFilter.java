@@ -21,15 +21,21 @@ public class BearerTokenFilter extends OncePerRequestFilter {
 
     private final Set<String> tokens;
 
+    /** The accepted tokens come from the comma-separated property app.api-tokens. */
     public BearerTokenFilter(@Value("${app.api-tokens}") Set<String> tokens) {
         this.tokens = tokens;
     }
 
+    /** Only /products needs a token; health and other endpoints stay open. */
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         return !request.getRequestURI().startsWith("/products");
     }
 
+    /**
+     * Lets the request through with a known bearer token; otherwise answers 401 with a WWW-Authenticate header and
+     * a JSON error, without reaching the controllers.
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {

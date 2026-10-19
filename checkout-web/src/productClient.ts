@@ -11,6 +11,10 @@ interface ProductJson {
   stock: number;
 }
 
+/**
+ * Talks to product-service for the checkout: read products, reserve stock. Turns every answer it does not expect
+ * into a typed error, so callers never handle status codes.
+ */
 export class ProductClient {
   private readonly baseUrl: string;
   private readonly token: string | undefined;
@@ -55,6 +59,10 @@ export class ProductClient {
     return { ...body, expiresAt: new Date(body.expiresAt) };
   }
 
+  /**
+   * Sends one request with Accept: application/json, the bearer token when there is one, and a JSON body when
+   * given.
+   */
   private request(method: string, path: string, body?: unknown): Promise<Response> {
     const headers: Record<string, string> = { Accept: 'application/json' };
     if (this.token) headers.Authorization = `Bearer ${this.token}`;

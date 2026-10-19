@@ -14,10 +14,12 @@ public class ReservationController {
 
     private final ReservationService service;
 
+    /** Spring injects the service. */
     public ReservationController(ReservationService service) {
         this.service = service;
     }
 
+    /** Validates the body (quantity 1 or more, else 400) and reserves the units: 201 with the reservation. */
     @PostMapping("/products/{id}/reservations")
     @ResponseStatus(HttpStatus.CREATED)
     public Reservation reserve(@PathVariable long id, @Valid @RequestBody ReservationRequest request) {

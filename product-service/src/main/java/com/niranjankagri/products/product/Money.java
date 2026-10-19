@@ -10,6 +10,7 @@ import java.math.BigDecimal;
  */
 public record Money(BigDecimal amount, String currency) {
 
+    /** Euros from a string, so the amount is exact ("19.99", never 19.99 as a double). */
     public static Money eur(String amount) {
         return new Money(new BigDecimal(amount), "EUR");
     }
