@@ -39,14 +39,24 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm run typecheck
-      - name: Unit and contract tests (writes the pact file)
-        run: npm test
+      - name: Unit and contract tests (writes the pact file, and JUnit XML)
+        run: npm test -- --reporter=default --reporter=junit --outputFile.junit=test-results/junit.xml
       - name: Keep the pact file
         uses: actions/upload-artifact@v7
         with:
           name: pact-file
           path: pacts/
           retention-days: 14
+      # JUnit XML only, as its own artifact: the CI results collection of
+      # automation-coverage-quality-intelligence imports it (config/producers.toml there)
+      - name: Keep the JUnit results
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: junit-consumer
+          path: checkout-web/test-results/junit.xml
+          if-no-files-found: warn
+          retention-days: 30
 
   provider:
     name: Provider (product-service)
@@ -64,6 +74,16 @@ jobs:
       # Unit and HTTP tests. The Pact folder test finds no pacts here and passes with a note;
       # the real verification runs in the contract job.
       - run: ./mvnw -B test
+      # JUnit XML only, as its own artifact: the CI results collection of
+      # automation-coverage-quality-intelligence imports it (config/producers.toml there)
+      - name: Keep the JUnit results
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: junit-provider
+          path: product-service/target/surefire-reports/TEST-*.xml
+          if-no-files-found: warn
+          retention-days: 30
 
   contract:
     name: Pact workflow with broker
