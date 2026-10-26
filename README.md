@@ -158,7 +158,11 @@ The broker's matrix after both runs: the main version verified and deployed, the
    broker's matrix as a table on the run's summary page.
 
 The consumer and provider test results are kept as JUnit XML (`junit-consumer`, `junit-provider`), which
-[Automation Coverage & Quality Intelligence](https://github.com/niranjankagri/automation-coverage-quality-intelligence) collects. `main` is protected by a ruleset: every change goes through a pull request, and the CI jobs above must pass before it is merged.
+[Automation Coverage & Quality Intelligence](https://github.com/niranjankagri/automation-coverage-quality-intelligence) collects.
+
+CI also runs every Friday at 22:30 UTC without a code change, so a broken dependency or a change outside the repository shows up within a week. Dependabot proposes dependency and GitHub Actions updates once a month (minor and patch updates grouped, major versions as separate pull requests).
+
+`main` is protected by a ruleset: every change goes through a pull request, and the CI jobs above must pass before it is merged.
 
 In real life the two services live in separate repositories with one long-lived broker. A broker **webhook**
 (`contract_requiring_verification_published`) then starts the provider's verification when a changed contract is
