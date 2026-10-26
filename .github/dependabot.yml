@@ -18,6 +18,11 @@ updates:
     groups:
       npm-checkout-web-minor-patch:
         update-types: [minor, patch]
+    ignore:
+      # typescript-eslint does not support TypeScript 7 yet (PR #4 failed: npm ERESOLVE);
+      # move to 7 together with typescript-eslint
+      - dependency-name: typescript
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: maven
     directory: "/product-service"
