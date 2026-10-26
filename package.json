@@ -16,6 +16,6 @@
   "author": "Niranjan Kumar Agri",
   "license": "MIT",
   "devDependencies": {
-    "@pact-foundation/pact-cli": "18.1.2"
+    "@pact-foundation/pact-cli": "18.10.9"
   }
 }
