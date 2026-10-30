@@ -13,7 +13,7 @@ describe.runIf(process.env.PACT_DISCOUNTS === '1')(
   () => {
     const pact = createPact();
 
-    it('gets the discount of a product', async () => {
+    it('[TC-307] gets the discount of a product', async () => {
       await pact
         .addInteraction()
         .given('a product exists', { id: 1, name: 'Claw hammer', price: 19.99, stock: 25 })

@@ -65,6 +65,10 @@ locally and in CI. No shared or hosted environment means no outages, no test dat
 somewhere else that breaks these tests; one clone and one command run everything. Both sides of the contract are here,
 so the whole workflow (publish, verify, can-i-deploy) runs without real teams or deployed services.
 
+## Test cases
+
+Every contract and provider API test starts with its case ID (`[TC-304] reserves stock for a product`, `tc206_...` with `@DisplayName("[TC-206] ...")`). The cases are written out for a manual run against the running provider in [docs/manual-test-cases.md](docs/manual-test-cases.md): provider API TC-201 to TC-207, contract TC-301 to TC-307. Pact interaction descriptions stay unchanged, because they identify the interactions in the pact file and the broker.
+
 ## Project structure
 
 ```

@@ -8,6 +8,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -51,7 +52,8 @@ class ProductApiTest {
 
     /** A product comes back with its price as amount and currency, and the date in ISO format. */
     @Test
-    void returnsAProductWithPriceAndIsoDate() throws Exception {
+    @DisplayName("[TC-201] A product comes back with its price as amount and currency, and an ISO date")
+    void tc201_returnsAProductWithPriceAndIsoDate() throws Exception {
         HttpResponse<String> response = send("GET", "/products/1", TOKEN, null);
 
         assertThat(response.statusCode()).isEqualTo(200);
@@ -63,7 +65,8 @@ class ProductApiTest {
 
     /** An unknown product is 404 with exactly the agreed error body. */
     @Test
-    void answers404ForAnUnknownProduct() throws Exception {
+    @DisplayName("[TC-202] An unknown product is 404 with the agreed error body")
+    void tc202_answers404ForAnUnknownProduct() throws Exception {
         HttpResponse<String> response = send("GET", "/products/999", TOKEN, null);
 
         assertThat(response.statusCode()).isEqualTo(404);
@@ -72,7 +75,8 @@ class ProductApiTest {
 
     /** The list filters by ids (unknown ids are left out, the order is by id) and by category. */
     @Test
-    void listsProductsByIdsAndCategory() throws Exception {
+    @DisplayName("[TC-203] The list filters by ids and by category")
+    void tc203_listsProductsByIdsAndCategory() throws Exception {
         assertThat(send("GET", "/products?ids=3,1,77", TOKEN, null).body())
             .containsSubsequence("\"id\":1", "\"id\":3")
             .doesNotContain("\"id\":2");
@@ -83,7 +87,8 @@ class ProductApiTest {
 
     /** No token and a wrong token are both 401, with the WWW-Authenticate header. */
     @Test
-    void refusesRequestsWithoutAValidToken() throws Exception {
+    @DisplayName("[TC-204] No token and a wrong token are both 401")
+    void tc204_refusesRequestsWithoutAValidToken() throws Exception {
         assertThat(send("GET", "/products/1", null, null).statusCode()).isEqualTo(401);
         HttpResponse<String> wrong = send("GET", "/products/1", "Bearer nope", null);
         assertThat(wrong.statusCode()).isEqualTo(401);
@@ -92,7 +97,8 @@ class ProductApiTest {
 
     /** A quantity of 0 is a 400 naming the field; a body that is not JSON is a 400 too. */
     @Test
-    void validatesTheReservationBody() throws Exception {
+    @DisplayName("[TC-205] An invalid reservation body is 400")
+    void tc205_validatesTheReservationBody() throws Exception {
         HttpResponse<String> zero = send("POST", "/products/1/reservations", TOKEN, "{\"quantity\":0}");
         assertThat(zero.statusCode()).isEqualTo(400);
         assertThat(zero.body()).contains("\"field\":\"quantity\"");
@@ -102,7 +108,8 @@ class ProductApiTest {
 
     /** Reserving more than the stock is a 409 that says how many units are available. */
     @Test
-    void answers409WithTheAvailableStock() throws Exception {
+    @DisplayName("[TC-206] Reserving more than the stock is 409 with the available units")
+    void tc206_answers409WithTheAvailableStock() throws Exception {
         HttpResponse<String> response = send("POST", "/products/2/reservations", TOKEN, "{\"quantity\":50}");
 
         assertThat(response.statusCode()).isEqualTo(409);
@@ -111,7 +118,8 @@ class ProductApiTest {
 
     /** The health endpoint is reachable without a token. */
     @Test
-    void healthNeedsNoToken() throws Exception {
+    @DisplayName("[TC-207] The health endpoint needs no token")
+    void tc207_healthNeedsNoToken() throws Exception {
         assertThat(send("GET", "/actuator/health", null, null).statusCode()).isEqualTo(200);
     }
 }

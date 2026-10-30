@@ -28,7 +28,7 @@ const productShape = (id: number, name: string, amount: number, stock: number) =
 describe('checkout-web -> product-service contract', () => {
   const pact = createPact();
 
-  it('gets one product', async () => {
+  it('[TC-301] gets one product', async () => {
     await pact
       .addInteraction()
       .given('a product exists', { id: 1, name: 'Claw hammer', price: 19.99, stock: 25 })
@@ -49,7 +49,7 @@ describe('checkout-web -> product-service contract', () => {
       });
   });
 
-  it('gets 404 for a product that does not exist', async () => {
+  it('[TC-302] gets 404 for a product that does not exist', async () => {
     await pact
       .addInteraction()
       .given('no product exists', { id: 999 })
@@ -65,7 +65,7 @@ describe('checkout-web -> product-service contract', () => {
       });
   });
 
-  it('gets several products by id in one request', async () => {
+  it('[TC-303] gets several products by id in one request', async () => {
     await pact
       .addInteraction()
       .given('products exist', { ids: [1, 2] })
@@ -85,7 +85,7 @@ describe('checkout-web -> product-service contract', () => {
       });
   });
 
-  it('reserves stock for a product', async () => {
+  it('[TC-304] reserves stock for a product', async () => {
     await pact
       .addInteraction()
       .given('a product exists', { id: 1, name: 'Claw hammer', price: 19.99, stock: 25 })
@@ -110,7 +110,7 @@ describe('checkout-web -> product-service contract', () => {
       });
   });
 
-  it('gets 409 with the available stock when there is not enough', async () => {
+  it('[TC-305] gets 409 with the available stock when there is not enough', async () => {
     await pact
       .addInteraction()
       .given('a product exists', { id: 2, name: 'Cordless drill', price: 89.0, stock: 1 })
@@ -133,7 +133,7 @@ describe('checkout-web -> product-service contract', () => {
       });
   });
 
-  it('gets 401 without a token', async () => {
+  it('[TC-306] gets 401 without a token', async () => {
     // No Authorization header in this request: the provider's request filter must leave it that way.
     await pact
       .addInteraction()
