@@ -6,7 +6,7 @@ name: pact-broker
 
 services:
   postgres:
-    image: postgres:17-alpine
+    image: postgres:18-alpine
     environment:
       POSTGRES_USER: pact
       POSTGRES_PASSWORD: pact # local demo only; never a real secret
